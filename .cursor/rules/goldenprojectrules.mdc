@@ -1,0 +1,358 @@
+---
+alwaysApply: true
+---
+
+# 货架电商网站 - 项目规则
+
+## 项目概述
+
+这是一个基于Vue 3和Spring Boot的响应式货架电商网站，采用前后端分离架构，支持PC端和移动端。
+
+### 技术栈
+
+**前端技术栈：**
+- Vue 3 (Composition API)
+- Vue Router 4 (路由管理)
+- Pinia (状态管理)
+- Element Plus (UI组件库)
+- Axios (HTTP请求)
+- Vite (构建工具)
+
+**后端技术栈：**
+- Spring Boot 3.1.5
+- MyBatis (数据持久化)
+- MySQL 8.0+ (数据库)
+- Spring Security (安全认证)
+- JWT (Token认证)
+- Maven (依赖管理)
+
+## 架构设计
+
+### 前后端分离架构
+
+```
+前端 (Vue 3)
+├── 响应式布局（PC + 移动端）
+├── Vue Router（路由管理）
+├── Pinia（状态管理）
+├── Axios（HTTP请求）
+└── Element Plus（UI组件库）
+
+后端 (Spring Boot)
+├── Spring MVC（RESTful API）
+├── Spring Security（安全认证）
+├── MyBatis（数据持久化）
+├── MySQL（数据库）
+└── 文件上传服务
+```
+
+### 项目结构规范
+
+**后端结构：**
+```
+backend/
+├── src/main/java/com/golden/
+│   ├── controller/     # 控制器层 - 处理HTTP请求
+│   ├── service/        # 业务逻辑层 - 实现业务逻辑
+│   ├── mapper/         # 数据访问层 - MyBatis接口
+│   ├── entity/         # 实体类 - 对应数据库表
+│   ├── dto/            # 数据传输对象 - 请求/响应对象
+│   ├── config/         # 配置类 - Spring配置
+│   └── util/           # 工具类 - 通用工具方法
+├── src/main/resources/
+│   ├── mapper/         # MyBatis XML映射文件
+│   ├── db/             # 数据库脚本
+│   └── application.yml # 应用配置文件
+└── pom.xml
+```
+
+**前端结构：**
+```
+frontend/
+├── src/
+│   ├── views/          # 页面组件
+│   │   ├── Home.vue
+│   │   ├── ProductList.vue
+│   │   ├── ProductDetail.vue
+│   │   ├── Cart.vue
+│   │   ├── OrderConfirm.vue
+│   │   ├── OrderList.vue
+│   │   ├── OrderDetail.vue
+│   │   ├── UserCenter.vue
+│   │   ├── Login.vue
+│   │   ├── Register.vue
+│   │   └── Admin/
+│   ├── components/     # 公共组件
+│   │   ├── Header.vue
+│   │   └── Footer.vue
+│   ├── router/         # 路由配置
+│   │   └── index.js
+│   ├── store/          # 状态管理
+│   │   └── user.js
+│   ├── api/            # API接口封装
+│   │   └── index.js
+│   ├── utils/          # 工具函数
+│   └── App.vue
+├── public/
+└── package.json
+```
+
+## 数据库设计
+
+### 核心表结构
+
+1. **users (用户表)**
+   - id, username, password, email, phone, avatar, status, created_at, updated_at
+
+2. **categories (商品分类表)**
+   - id, name, parent_id, sort_order, status
+
+3. **products (商品表)**
+   - id, name, description, price, stock, category_id, image_urls, status, created_at, updated_at
+
+4. **cart_items (购物车表)**
+   - id, user_id, product_id, quantity, created_at, updated_at
+
+5. **orders (订单表)**
+   - id, user_id, order_no, total_amount, status, shipping_address, created_at, updated_at
+
+6. **order_items (订单项表)**
+   - id, order_id, product_id, quantity, price, subtotal
+
+7. **reviews (商品评价表)**
+   - id, user_id, product_id, rating, content, images, created_at
+
+### 数据库命名规范
+- 表名使用复数形式（users, products等）
+- 字段名使用下划线命名（user_id, created_at等）
+- 主键统一使用 `id`，类型为 `BIGINT AUTO_INCREMENT`
+- 时间字段统一使用 `created_at`, `updated_at`
+
+## API接口规范
+
+### RESTful API设计原则
+
+1. **URL命名规范：**
+   - 使用名词，不使用动词
+   - 使用复数形式
+   - 使用小写字母和连字符
+   - 示例：`/api/products`, `/api/cart`
+
+2. **HTTP方法使用：**
+   - GET: 查询资源
+   - POST: 创建资源
+   - PUT: 更新资源（完整更新）
+   - DELETE: 删除资源
+
+3. **统一响应格式：**
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {}
+}
+```
+
+### API接口列表
+
+**认证相关：**
+- POST `/api/auth/register` - 用户注册
+- POST `/api/auth/login` - 用户登录
+
+**用户相关：**
+- GET `/api/user/profile` - 获取用户信息（需认证）
+- PUT `/api/user/profile` - 更新用户信息（需认证）
+
+**商品相关：**
+- GET `/api/products` - 商品列表（支持分页、分类筛选、关键词搜索）
+- GET `/api/products/{id}` - 商品详情
+- POST `/api/products` - 创建商品（管理员，需认证）
+- PUT `/api/products/{id}` - 更新商品（管理员，需认证）
+- DELETE `/api/products/{id}` - 删除商品（管理员，需认证）
+
+**分类相关：**
+- GET `/api/categories` - 分类列表
+
+**购物车相关（需认证）：**
+- GET `/api/cart` - 获取购物车
+- POST `/api/cart` - 添加商品到购物车
+- PUT `/api/cart/{id}` - 更新购物车商品数量
+- DELETE `/api/cart/{id}` - 删除购物车商品
+
+**订单相关（需认证）：**
+- POST `/api/orders` - 创建订单
+- GET `/api/orders` - 订单列表（支持分页）
+- GET `/api/orders/{id}` - 订单详情
+- GET `/api/orders/{id}/items` - 订单商品列表
+- PUT `/api/orders/{id}/status` - 更新订单状态
+
+**评价相关：**
+- GET `/api/reviews/product/{productId}` - 获取商品评价（支持分页）
+- POST `/api/reviews` - 提交评价（需认证）
+
+**文件上传：**
+- POST `/api/upload/image` - 上传图片
+
+**管理后台（需认证）：**
+- GET `/api/orders/admin/all` - 获取所有订单（管理员）
+
+## 开发规范
+
+### 后端开发规范
+
+1. **包结构规范：**
+   - controller: 只处理HTTP请求，不包含业务逻辑
+   - service: 实现业务逻辑，可调用mapper
+   - mapper: 只负责数据库操作
+   - entity: 实体类，对应数据库表
+   - dto: 数据传输对象，用于API请求和响应
+
+2. **命名规范：**
+   - 类名使用大驼峰（PascalCase）
+   - 方法名和变量名使用小驼峰（camelCase）
+   - 常量使用大写下划线（UPPER_SNAKE_CASE）
+
+3. **代码规范：**
+   - 使用Lombok简化代码
+   - 使用@RequiredArgsConstructor进行依赖注入
+   - 异常处理统一在Controller层
+   - 返回结果统一使用Result<T>包装
+
+4. **MyBatis规范：**
+   - Mapper接口放在 `mapper` 包下
+   - XML映射文件放在 `resources/mapper` 目录
+   - 使用resultMap进行结果映射
+   - 关联查询使用association或collection
+
+5. **安全规范：**
+   - 密码使用BCrypt加密存储
+   - JWT Token放在请求头 `Authorization: Bearer {token}`
+   - 敏感接口需要认证，在SecurityConfig中配置
+
+### 前端开发规范
+
+1. **组件规范：**
+   - 使用Vue 3 Composition API
+   - 使用 `<script setup>` 语法
+   - 组件名使用PascalCase
+   - 文件名与组件名保持一致
+
+2. **路由规范：**
+   - 路由路径使用kebab-case
+   - 需要认证的路由添加 `meta: { requiresAuth: true }`
+   - 路由守卫在 `router/index.js` 中实现
+
+3. **状态管理规范：**
+   - 使用Pinia进行状态管理
+   - Store文件放在 `store` 目录
+   - 用户信息存储在 `user` store中
+
+4. **API调用规范：**
+   - 所有API调用通过 `api/index.js` 封装的axios实例
+   - 请求拦截器自动添加Token
+   - 响应拦截器统一处理错误
+
+5. **响应式设计规范：**
+   - 使用Element Plus的栅格系统（el-row, el-col）
+   - 使用CSS媒体查询实现移动端适配
+   - 移动端优先设计（Mobile First）
+   - 断点：xs (<768px), sm (≥768px), md (≥992px), lg (≥1200px)
+
+6. **样式规范：**
+   - 使用scoped样式避免样式污染
+   - 使用CSS变量统一管理颜色和尺寸
+   - 移动端适配使用媒体查询
+
+## 功能模块
+
+### 1. 用户系统模块
+- 用户注册/登录
+- JWT Token认证
+- 用户信息管理
+- 个人中心
+
+### 2. 商品目录模块
+- 商品列表（分页、分类筛选、搜索）
+- 商品详情
+- 商品分类树
+- 商品图片展示
+
+### 3. 购物车模块
+- 添加商品到购物车
+- 购物车商品列表
+- 修改商品数量
+- 删除购物车商品
+
+### 4. 订单管理模块
+- 创建订单（从购物车）
+- 订单列表（分页）
+- 订单详情
+- 订单状态管理
+
+### 5. 商品评价模块
+- 查看商品评价（分页）
+- 提交商品评价
+- 评价图片上传
+
+### 6. 管理后台模块
+- 商品管理（CRUD）
+- 订单管理（查看、更新状态）
+
+### 7. 文件上传功能
+- 图片上传
+- 支持多图片上传
+- 图片URL存储
+
+## 代码风格
+
+### Java代码风格
+- 使用4个空格缩进
+- 类和方法之间空一行
+- 方法参数过多时换行对齐
+- 使用JavaDoc注释重要方法
+
+### JavaScript/Vue代码风格
+- 使用2个空格缩进
+- 使用单引号
+- 语句末尾不加分号（Vue项目）
+- 使用ES6+语法
+
+## 注意事项
+
+1. **数据库配置：**
+   - 数据库连接信息在 `application.yml` 中配置
+   - 生产环境必须修改默认密码
+
+2. **JWT配置：**
+   - JWT密钥在 `application.yml` 中配置
+   - 生产环境必须使用强密钥
+   - Token过期时间：24小时
+
+3. **文件上传：**
+   - 上传路径在 `application.yml` 中配置
+   - 确保上传目录存在且有写权限
+   - 生产环境建议使用OSS存储
+
+4. **CORS配置：**
+   - 开发环境允许所有来源
+   - 生产环境需要配置具体域名
+
+5. **前端代理：**
+   - 开发环境API代理配置在 `vite.config.js`
+   - 生产环境需要配置Nginx反向代理
+
+## 开发流程
+
+1. 创建功能分支
+2. 实现后端API（Controller -> Service -> Mapper）
+3. 实现前端页面和API调用
+4. 前后端联调测试
+5. 代码审查
+6. 合并到主分支
+
+## 测试要求
+
+- 所有API接口需要测试
+- 前端页面需要测试PC和移动端显示
+- 用户认证流程需要测试
+- 购物车和订单流程需要完整测试

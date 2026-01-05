@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.golden.mapper.OrderItemMapper">
+    <resultMap id="BaseResultMap" type="com.golden.entity.OrderItem">
+        <id column="id" property="id"/>
+        <result column="order_id" property="orderId"/>
+        <result column="product_id" property="productId"/>
+        <result column="quantity" property="quantity"/>
+        <result column="price" property="price"/>
+        <result column="subtotal" property="subtotal"/>
+        <association property="product" javaType="com.golden.entity.Product">
+            <id column="p_id" property="id"/>
+            <result column="p_name" property="name"/>
+            <result column="p_image_urls" property="imageUrls"/>
+        </association>
+    </resultMap>
+    
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO order_items (order_id, product_id, quantity, price, subtotal)
+        VALUES (#{orderId}, #{productId}, #{quantity}, #{price}, #{subtotal})
+    </insert>
+    
+    <select id="findByOrderId" resultMap="BaseResultMap">
+        SELECT oi.*, 
+               p.id as p_id, p.name as p_name, p.image_urls as p_image_urls
+        FROM order_items oi
+        LEFT JOIN products p ON oi.product_id = p.id
+        WHERE oi.order_id = #{orderId}
+    </select>
+</mapper>
+
