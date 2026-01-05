@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # MySQL 数据库服务
+  mysql:
+    image: mysql:8.0
+    container_name: ecommerce-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ecommerce
+      MYSQL_USER: ecommerce
+      MYSQL_PASSWORD: ecommerce
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./src/main/resources/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - ecommerce-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 后端应用服务
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ecommerce-backend
+    ports:
+      - "8080:8080"
+    environment:
+      # 数据库配置（通过环境变量覆盖 application.yml）
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ecommerce?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      # JWT 配置
+      JWT_SECRET: golden-ecommerce-secret-key-2024
+      JWT_EXPIRATION: 86400000
+      # 文件上传配置
+      FILE_UPLOAD_PATH: /app/uploads
+      FILE_UPLOAD_URL: http://localhost:8080/uploads/
+    volumes:
+      # 持久化上传文件
+      - uploads_data:/app/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  ecommerce-network:
+    driver: bridge
+
