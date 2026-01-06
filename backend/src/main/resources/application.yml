@@ -41,3 +41,20 @@ file:
     path: /uploads
     url: http://localhost:8080/uploads/
 
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.golden: INFO
+    org.springframework: WARN
+    org.mybatis: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+  file:
+    name: ./logs/application.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 30
+
