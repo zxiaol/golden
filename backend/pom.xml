@@ -14,7 +14,7 @@
 
     <groupId>com.golden</groupId>
     <artifactId>ecommerce-backend</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
     <name>Ecommerce Backend</name>
     <description>货架电商网站后端服务</description>
 
