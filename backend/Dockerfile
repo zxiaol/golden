@@ -1,5 +1,5 @@
 # 基于已生成的 JAR 文件构建镜像
-FROM openjdk:17-jdk-alpine
+FROM amazoncorretto:17-alpine-jdk
 
 # 设置工作目录
 WORKDIR /app
