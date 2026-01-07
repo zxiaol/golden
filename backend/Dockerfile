@@ -24,6 +24,6 @@ ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseG1GC"
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
   CMD curl -f http://localhost:8080/api/products || exit 1
 
-# 启动应用
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+# 启动应用（支持环境变量配置）
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:-prod} -jar app.jar"]
 

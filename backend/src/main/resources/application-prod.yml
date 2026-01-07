@@ -1,0 +1,49 @@
+# 生产环境配置
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 生产环境数据库配置（通过环境变量覆盖）
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/ecommerce?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:root}
+  # 生产环境不显示 SQL
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+
+# MyBatis 生产环境配置（不显示 SQL）
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nop.NoLoggingImpl
+
+# JWT配置（生产环境，建议使用环境变量）
+jwt:
+  secret: ${JWT_SECRET:golden-ecommerce-secret-key-2024-prod}
+  expiration: ${JWT_EXPIRATION:86400000} # 24小时
+
+# 文件上传配置（生产环境）
+file:
+  upload:
+    path: ${FILE_UPLOAD_PATH:/app/uploads}
+    url: ${FILE_UPLOAD_URL:http://localhost:8080/uploads/}
+
+# 日志配置（生产环境）
+logging:
+  level:
+    root: INFO
+    com.golden: INFO  # 生产环境使用 INFO 级别
+    org.springframework: WARN
+    org.mybatis: WARN
+    org.springframework.web: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+  file:
+    name: ./logs/application-prod.log
+

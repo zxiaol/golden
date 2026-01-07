@@ -34,6 +34,8 @@ services:
     ports:
       - "8080:8080"
     environment:
+      # Spring 环境配置
+      SPRING_PROFILES_ACTIVE: prod
       # 数据库配置（通过环境变量覆盖 application.yml）
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ecommerce?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
       SPRING_DATASOURCE_USERNAME: root

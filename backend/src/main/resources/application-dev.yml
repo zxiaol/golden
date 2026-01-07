@@ -1,0 +1,48 @@
+# 开发环境配置
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ecommerce?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+  # 开发环境显示 SQL
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+
+# MyBatis 开发环境配置（显示 SQL）
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# JWT配置（开发环境）
+jwt:
+  secret: golden-ecommerce-secret-key-2024-dev
+  expiration: 86400000 # 24小时
+
+# 文件上传配置（开发环境）
+file:
+  upload:
+    path: ./uploads
+    url: http://localhost:8080/uploads/
+
+# 日志配置（开发环境）
+logging:
+  level:
+    root: INFO
+    com.golden: DEBUG  # 开发环境使用 DEBUG 级别
+    org.springframework: INFO
+    org.mybatis: DEBUG
+    org.springframework.web: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+  file:
+    name: ./logs/application-dev.log
+
