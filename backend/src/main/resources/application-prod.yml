@@ -17,11 +17,6 @@ spring:
     hibernate:
       ddl-auto: none
 
-# MyBatis 生产环境配置（不显示 SQL）
-mybatis:
-  configuration:
-    log-impl: org.apache.ibatis.logging.nop.NoLoggingImpl
-
 # JWT配置（生产环境，建议使用环境变量）
 jwt:
   secret: ${JWT_SECRET:golden-ecommerce-secret-key-2024-prod}
@@ -42,10 +37,12 @@ flyway:
   clean-disabled: true  # 生产环境禁止清理
 
 # 日志配置（生产环境）
+# MyBatis SQL 日志通过日志级别控制（Spring Boot 3.x 推荐方式）
 logging:
   level:
     root: INFO
     com.golden: INFO  # 生产环境使用 INFO 级别
+    com.golden.mapper: WARN  # 生产环境不显示 SQL
     org.springframework: WARN
     org.mybatis: WARN
     org.springframework.web: WARN

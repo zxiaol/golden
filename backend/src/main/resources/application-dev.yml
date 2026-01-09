@@ -16,11 +16,6 @@ spring:
     hibernate:
       ddl-auto: none
 
-# MyBatis 开发环境配置（显示 SQL）
-mybatis:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
 # JWT配置（开发环境）
 jwt:
   secret: golden-ecommerce-secret-key-2024-dev
@@ -41,10 +36,12 @@ flyway:
   clean-disabled: false  # 开发环境允许清理
 
 # 日志配置（开发环境）
+# MyBatis SQL 日志通过日志级别控制（Spring Boot 3.x 推荐方式）
 logging:
   level:
     root: INFO
     com.golden: DEBUG  # 开发环境使用 DEBUG 级别
+    com.golden.mapper: DEBUG  # MyBatis Mapper SQL 日志
     org.springframework: INFO
     org.mybatis: DEBUG
     org.springframework.web: DEBUG
