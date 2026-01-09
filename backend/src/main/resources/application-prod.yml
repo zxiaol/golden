@@ -33,6 +33,14 @@ file:
     path: ${FILE_UPLOAD_PATH:/app/uploads}
     url: ${FILE_UPLOAD_URL:http://localhost:8080/uploads/}
 
+# Flyway 配置（生产环境）
+flyway:
+  enabled: true
+  locations: classpath:db/migration
+  baseline-on-migrate: true
+  validate-on-migrate: true
+  clean-disabled: true  # 生产环境禁止清理
+
 # 日志配置（生产环境）
 logging:
   level:
@@ -41,6 +49,7 @@ logging:
     org.springframework: WARN
     org.mybatis: WARN
     org.springframework.web: WARN
+    org.flywaydb: INFO  # Flyway 日志
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"

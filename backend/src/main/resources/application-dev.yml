@@ -7,7 +7,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ecommerce?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://10.128.244.10:3306/ecommerce?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     password: root
   # 开发环境显示 SQL
@@ -32,6 +32,14 @@ file:
     path: ./uploads
     url: http://localhost:8080/uploads/
 
+# Flyway 配置（开发环境）
+flyway:
+  enabled: true
+  locations: classpath:db/migration
+  baseline-on-migrate: true
+  validate-on-migrate: true
+  clean-disabled: false  # 开发环境允许清理
+
 # 日志配置（开发环境）
 logging:
   level:
@@ -40,6 +48,7 @@ logging:
     org.springframework: INFO
     org.mybatis: DEBUG
     org.springframework.web: DEBUG
+    org.flywaydb: DEBUG  # Flyway 日志
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
