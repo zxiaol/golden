@@ -23,6 +23,8 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- MySQL 驱动版本（与 Spring Boot 3.1.5 兼容） -->
+        <mysql.version>8.0.33</mysql.version>
     </properties>
 
     <dependencies>
@@ -123,6 +125,32 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <!-- Flyway Maven 插件 -->
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 使用配置文件（推荐） -->
+                    <configFiles>flyway.conf</configFiles>
+                    <!-- 或者直接配置（如果配置文件不存在） -->
+                    <url>${flyway.url:jdbc:mysql://10.128.244.10:3306/ecommerce?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=Asia/Shanghai&amp;allowPublicKeyRetrieval=true}</url>
+                    <user>${flyway.user:root}</user>
+                    <password>${flyway.password:zhuleqi}</password>
+                    <driver>com.mysql.cj.jdbc.Driver</driver>
+                    <locations>
+                        <location>classpath:db/migration</location>
+                    </locations>
+                    <baselineOnMigrate>true</baselineOnMigrate>
+                    <validateOnMigrate>true</validateOnMigrate>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.mysql</groupId>
+                        <artifactId>mysql-connector-j</artifactId>
+                        <version>${mysql.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
