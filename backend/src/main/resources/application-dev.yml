@@ -28,12 +28,19 @@ file:
     url: http://localhost:8080/uploads/
 
 # Flyway 配置（开发环境）
+# 如果 Flyway 需要使用不同的数据库用户，可以配置独立的连接信息
+# 如果不配置，Flyway 会使用 spring.datasource 的配置
 flyway:
   enabled: true
   locations: classpath:db/migration
   baseline-on-migrate: true
   validate-on-migrate: true
   clean-disabled: false  # 开发环境允许清理
+  # Flyway 独立数据库配置（可选，如果配置了会覆盖 spring.datasource）
+  # 开发环境通常使用与应用相同的数据库用户，但也可以配置独立用户
+  url: ${FLYWAY_URL:}  # 如果为空，使用 spring.datasource.url
+  user: ${FLYWAY_USER:}  # 如果为空，使用 spring.datasource.username
+  password: ${FLYWAY_PASSWORD:}  # 如果为空，使用 spring.datasource.password
 
 # 日志配置（开发环境）
 # MyBatis SQL 日志通过日志级别控制（Spring Boot 3.x 推荐方式）

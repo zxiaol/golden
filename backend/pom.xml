@@ -127,13 +127,25 @@
                 </configuration>
             </plugin>
             <!-- Flyway Maven 插件 -->
+            <!-- 
+                注意：Maven 插件的配置与 Spring Boot 应用启动时的 Flyway 配置是分开的
+                - Maven 插件：用于手动执行迁移（mvn flyway:migrate）
+                - Spring Boot：应用启动时自动执行迁移
+                
+                配置优先级（从高到低）：
+                1. 命令行参数：-Dflyway.url=... -Dflyway.user=... -Dflyway.password=...
+                2. Maven 属性：${flyway.url} ${flyway.user} ${flyway.password}
+                3. 配置文件：flyway.conf
+                4. 默认值（如下面的配置）
+            -->
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
                 <configuration>
-                    <!-- 使用配置文件（推荐） -->
+                    <!-- 优先使用配置文件（如果存在） -->
                     <configFiles>flyway.conf</configFiles>
-                    <!-- 或者直接配置（如果配置文件不存在） -->
+                    <!-- 支持通过 Maven 属性或环境变量覆盖 -->
+                    <!-- 开发环境默认配置 -->
                     <url>${flyway.url:jdbc:mysql://10.128.244.10:3306/ecommerce?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=Asia/Shanghai&amp;allowPublicKeyRetrieval=true}</url>
                     <user>${flyway.user:root}</user>
                     <password>${flyway.password:zhuleqi}</password>
