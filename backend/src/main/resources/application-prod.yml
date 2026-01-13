@@ -9,8 +9,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     # 生产环境数据库配置（通过环境变量覆盖）
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/ecommerce?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai}
-    username: ${SPRING_DATASOURCE_USERNAME:root}
-    password: ${SPRING_DATASOURCE_PASSWORD:root}
+    username: ${SPRING_DATASOURCE_USERNAME:ecommerce}
+    password: ${SPRING_DATASOURCE_PASSWORD:ecommerce}
   # 生产环境不显示 SQL
   jpa:
     show-sql: false
@@ -39,11 +39,9 @@ flyway:
   clean-disabled: true  # 生产环境禁止清理
   # Flyway 独立数据库配置（可选，如果配置了会覆盖 spring.datasource）
   # 生产环境建议使用专门的迁移用户（具有 DDL 权限）
-  # 通过环境变量 FLYWAY_URL、FLYWAY_USER、FLYWAY_PASSWORD 配置
-  # 如果未设置环境变量，Flyway 会自动使用 spring.datasource 的配置
-  url: ${FLYWAY_URL:}  # 如果为空，使用 spring.datasource.url
-  user: ${FLYWAY_USER:}  # 如果为空，使用 spring.datasource.username
-  password: ${FLYWAY_PASSWORD:}  # 如果为空，使用 spring.datasource.password
+  url: jdbc:mysql://mysql:3306/ecommerce?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai  # 如果为空，使用 spring.datasource.url
+  user: ecommerce  # 如果为空，使用 spring.datasource.username
+  password: ecommerce  # 如果为空，使用 spring.datasource.password
 
 # 日志配置（生产环境）
 # MyBatis SQL 日志通过日志级别控制（Spring Boot 3.x 推荐方式）
