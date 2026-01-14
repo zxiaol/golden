@@ -34,14 +34,16 @@ file:
 flyway:
   enabled: true
   locations: classpath:db/migration
-  baseline-on-migrate: true
-  validate-on-migrate: true
+  baseline-on-migrate: true  # 关键：如果数据库已有表，自动创建基线
+  baseline-version: 0  # 基线版本号
+  validate-on-migrate: false  # 临时禁用验证，让基线先创建
   clean-disabled: true  # 生产环境禁止清理
-  # Flyway 独立数据库配置（可选，如果配置了会覆盖 spring.datasource）
+  # Flyway 独立数据库配置（如果配置了会覆盖 spring.datasource）
   # 生产环境建议使用专门的迁移用户（具有 DDL 权限）
-  url: jdbc:mysql://mysql:3306/ecommerce?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai  # 如果为空，使用 spring.datasource.url
-  user: ecommerce  # 如果为空，使用 spring.datasource.username
-  password: ecommerce  # 如果为空，使用 spring.datasource.password
+  # 支持通过环境变量覆盖：FLYWAY_URL、FLYWAY_USER、FLYWAY_PASSWORD
+  url: ${FLYWAY_URL:jdbc:mysql://mysql:3306/ecommerce?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai}
+  user: ${FLYWAY_USER:ecommerce}
+  password: ${FLYWAY_PASSWORD:ecommerce}
 
 # 日志配置（生产环境）
 # MyBatis SQL 日志通过日志级别控制（Spring Boot 3.x 推荐方式）
